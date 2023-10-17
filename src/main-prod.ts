@@ -13,15 +13,6 @@ async function bootstrap() {
   );
   app.enableCors();
   app.setGlobalPrefix('api');
-  const options = new DocumentBuilder()
-    .setTitle(' API Documentation')
-    .setDescription(' API Documention')
-    .setVersion('1.0.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api/docs', app, document);
-  // await app.listen(3000,"192.168.100.22");
   await app.listen(3000);
 }
 bootstrap();
