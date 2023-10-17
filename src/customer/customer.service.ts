@@ -27,7 +27,7 @@ export class CustomerService {
   ) { }
 
   async findAll() {
-    return this.customerRepo.find({ relations: ['shop'] });
+    return this.customerRepo.find();
   }
 
   findOne(id: number): Observable<Customer> {
