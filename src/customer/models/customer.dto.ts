@@ -1,18 +1,25 @@
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, MinLength, ValidateIf } from 'class-validator';
+import { UserRole } from './customer.enum';
 
 export class UpdateCustomerDto {
-  @ApiPropertyOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   username: string;
 
-  @ApiPropertyOptional()
-  role: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEnum(UserRole)
+  role: UserRole;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
+  @IsNotEmpty()
   password: string;
 
   @ApiPropertyOptional()

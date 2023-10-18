@@ -58,7 +58,7 @@ export class CustomerController {
   }
 
 
-  @Put()
+  @Put(":id")
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse()

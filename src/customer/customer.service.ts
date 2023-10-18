@@ -52,9 +52,13 @@ export class CustomerService {
         if (!customer) {
           const newCust = new CustomerEntity();
           newCust.uuid = crypto.randomBytes(16).toString("hex");
+          newCust.refer_code = crypto.randomBytes(5).toString("hex");
           newCust.email = data['email'];
           newCust.username = data['username'];
+          newCust.role = data['role'];
           newCust.phone = data['phone'];
+          newCust.avatar_url = data['avatar_url'];
+          newCust.nrc = data['nrc'];
           newCust.password = this.authService.hashPasswordRun(data.password);
           return from(this.customerRepo.save(newCust)).pipe(
             mergeMap((customer: CustomerEntity) => {
