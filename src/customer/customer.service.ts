@@ -12,7 +12,7 @@ import { map, switchMap, mergeMap, catchError } from 'rxjs/operators';
 import { Customer } from './models/customer.interface';
 import { AuthService } from 'src/shared/auth/auth.service';
 import { CustomerEntity } from './models/customer.entity';
-import { LoginDto, UpdateCustomerDto  } from './models/customer.dto';
+import { LoginDto, UpdateCustomerDto } from './models/customer.dto';
 import { UserRole } from './models/customer.enum';
 import { emailTransport } from 'src/shared/util/mailer';
 const crypto = require("crypto");
@@ -48,7 +48,7 @@ export class CustomerService {
 
   createUser(data: UpdateCustomerDto) {
     return this.findByCustomerEmail(data['email']).pipe(
-      mergeMap((customer: CustomerEntity) => {
+      mergeMap(async (customer: CustomerEntity) => {
         if (!customer) {
           const newCust = new CustomerEntity();
           newCust.uuid = crypto.randomBytes(16).toString("hex");
@@ -59,7 +59,7 @@ export class CustomerService {
           newCust.phone = data['phone'];
           newCust.avatar_url = data['avatar_url'];
           newCust.nrc = data['nrc'];
-          newCust.password = this.authService.hashPasswordRun(data.password);
+          newCust.password = await this.authService.hashPasswordRun(data.password);
           return from(this.customerRepo.save(newCust)).pipe(
             mergeMap((customer: CustomerEntity) => {
               const payload = { username: customer.username, id: customer.id, role: UserRole.CUSTOMER };
@@ -67,7 +67,7 @@ export class CustomerService {
                 .generateJWT(payload)
                 .pipe(map((jwt: string) => {
                   let user = customer as Customer
-                    user.token = jwt
+                  user.token = jwt
                   return user;
                 }));
             }),
@@ -163,7 +163,7 @@ export class CustomerService {
     })
   }
   findByCustomerEmail(email: string): Observable<CustomerEntity> {
-    return from(this.customerRepo.findOne({ where: { email }})).pipe(
+    return from(this.customerRepo.findOne({ where: { email } })).pipe(
       map((customer: CustomerEntity) => {
         return customer;
       }),
