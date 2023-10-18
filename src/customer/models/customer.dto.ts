@@ -8,7 +8,7 @@ export class UpdateCustomerDto {
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({type:'enum',enum:UserRole,default: UserRole.CUSTOMER})
   @IsNotEmpty()
   @IsEnum(UserRole)
   role: UserRole;

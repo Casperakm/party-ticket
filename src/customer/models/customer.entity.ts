@@ -22,7 +22,7 @@ export class CustomerEntity extends BaseEntity {
   @Column({ nullable: true })
   password: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true })
   phone?: string;
 
   @Column({ nullable: true })
@@ -38,7 +38,7 @@ export class CustomerEntity extends BaseEntity {
   @Column({ nullable: true })
   balances?: number;
 
-  
+
 
   // @ManyToOne(
   //   type => WardEntity,

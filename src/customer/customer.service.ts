@@ -1,8 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  Inject,
-  forwardRef,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,7 +46,7 @@ export class CustomerService {
 
   createUser(data: UpdateCustomerDto) {
     return this.findByCustomerEmail(data['email']).pipe(
-      mergeMap(async (customer: CustomerEntity) => {
+      mergeMap((customer: CustomerEntity) => {
         if (!customer) {
           const newCust = new CustomerEntity();
           newCust.uuid = crypto.randomBytes(16).toString("hex");
@@ -59,19 +57,22 @@ export class CustomerService {
           newCust.phone = data['phone'];
           newCust.avatar_url = data['avatar_url'];
           newCust.nrc = data['nrc'];
-          newCust.password = await this.authService.hashPasswordRun(data.password);
-          return from(this.customerRepo.save(newCust)).pipe(
-            mergeMap((customer: CustomerEntity) => {
-              const payload = { username: customer.username, id: customer.id, role: UserRole.CUSTOMER };
-              return this.authService
-                .generateJWT(payload)
-                .pipe(map((jwt: string) => {
-                  let user = customer as Customer
-                  user.token = jwt
-                  return user;
-                }));
-            }),
-          );
+          return from(this.authService.hashPasswordRun(data.password)).pipe(mergeMap((password) => {
+            newCust.password = password;
+            return from(this.customerRepo.save(newCust)).pipe(
+              mergeMap((customer: CustomerEntity) => {
+                const payload = { username: customer.username, id: customer.id, role: UserRole.CUSTOMER };
+                return this.authService
+                  .generateJWT(payload)
+                  .pipe(map((jwt: string) => {
+                    let user = customer as Customer
+                    user.token = jwt
+                    return user;
+                  }));
+              }),
+            );
+          }))
+
         } else {
           throw new BadRequestException('User Email Is Alreay Exist!');
         }
