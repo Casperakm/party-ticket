@@ -7,5 +7,4 @@ export interface Customer {
   password?: string;
   role?: UserRole;
   token?: string;
-  shop_id?: number;
 }

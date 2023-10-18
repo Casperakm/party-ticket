@@ -6,7 +6,7 @@ import { ProductTypeEntity } from './model/product-type.entity';
 import { SuccessAPI } from '../shared/util/success-api';
 import { UserData } from 'src/shared/decorators/users.decorator';
 
-@Controller('shop/:shop_id/product-type')
+@Controller('/product-type')
 @ApiTags('Product-Type')
 export class ProductTypeController {
     constructor(

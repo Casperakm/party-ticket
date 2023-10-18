@@ -63,7 +63,6 @@ export class CustomerService {
                 .generateJWT(payload)
                 .pipe(map((jwt: string) => {
                   let user = customer as Customer
-                  user.shop_id = null,
                     user.token = jwt
                   return user;
                 }));
@@ -84,7 +83,7 @@ export class CustomerService {
       if (!this.authService.comparePasswordsRun(data.password, user.password)) {
         throw new NotFoundException('User Password Is Wrong');
       }
-      const payload = { username: user.username, id: user.id, role: role, shop_id: user.shop_id }
+      const payload = { username: user.username, id: user.id, role: role }
       return this.authService
         .generateJWT(payload)
         .pipe(map((jwt: string) => {
@@ -160,7 +159,7 @@ export class CustomerService {
     })
   }
   findByCustomerEmail(email: string): Observable<CustomerEntity> {
-    return from(this.customerRepo.findOne({ where: { email }, relations: ['shop'] })).pipe(
+    return from(this.customerRepo.findOne({ where: { email }})).pipe(
       map((customer: CustomerEntity) => {
         return customer;
       }),
